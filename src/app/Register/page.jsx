@@ -1,10 +1,57 @@
 'use client';
+import { useContext } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { AuthContext } from '@/providers/AuthProvider';
+import Swal from 'sweetalert2';
 
 const RegisterPage = () => {
+    const { createUser, updateUserProfile } = useContext(AuthContext);
+    const router = useRouter();
+
     const handleRegister = (e) => {
         e.preventDefault();
-        // Firebase registration logic will go here
+        const form = e.target;
+        const name = form.name.value;
+        const email = form.email.value;
+        const photoURL = form.photoURL.value;
+        const password = form.password.value;
+
+        // Password validation rule
+        if (password.length < 6) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Password must be at least 6 characters long!',
+            });
+            return;
+        }
+
+        createUser(email, password)
+            .then(() => {
+                updateUserProfile(name, photoURL)
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Registration Successful!',
+                            text: `Welcome to StudyNook, ${name}!`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        form.reset();
+                        router.push('/');
+                    })
+                    .catch(err => {
+                        Swal.fire({ icon: 'error', title: 'Profile Update Error', text: err.message });
+                    });
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Failed',
+                    text: error.message,
+                });
+            });
     };
 
     return (
@@ -18,25 +65,25 @@ const RegisterPage = () => {
                         <label className="label">
                             <span className="label-text font-semibold">Full Name</span>
                         </label>
-                        <input type="text" placeholder="Enter your full name" className="input input-bordered w-full" required />
+                        <input type="text" name="name" placeholder="Enter your full name" className="input input-bordered w-full" required />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text font-semibold">Email Address</span>
                         </label>
-                        <input type="email" placeholder="Enter your email" className="input input-bordered w-full" required />
+                        <input type="email" name="email" placeholder="Enter your email" className="input input-bordered w-full" required />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text font-semibold">Image URL</span>
                         </label>
-                        <input type="url" placeholder="Paste your profile picture link" className="input input-bordered w-full" />
+                        <input type="url" name="photoURL" placeholder="Paste your profile picture link" className="input input-bordered w-full" />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text font-semibold">Password</span>
                         </label>
-                        <input type="password" placeholder="Create a strong password" className="input input-bordered w-full" required />
+                        <input type="password" name="password" placeholder="Create a strong password" className="input input-bordered w-full" required />
                     </div>
                     <div className="form-control mt-4">
                         <button type="submit" className="btn btn-primary text-white w-full">Register</button>

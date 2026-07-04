@@ -1,14 +1,60 @@
 'use client';
+import { useContext } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { AuthContext } from '@/providers/AuthProvider';
+import Swal from 'sweetalert2';
 
 const LoginPage = () => {
+    const { signInUser, googleSignIn } = useContext(AuthContext);
+    const router = useRouter();
+
     const handleLogin = (e) => {
         e.preventDefault();
-        // Firebase login logic will go here
+        const form = e.target;
+        const email = form.email.value;
+        const password = form.password.value;
+
+        signInUser(email, password)
+            .then((result) => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Welcome Back!',
+                    text: `Logged in as ${result.user.displayName || 'User'}`,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                form.reset();
+                router.push('/');
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: error.message,
+                });
+            });
     };
 
     const handleGoogleSignIn = () => {
-        // Firebase Google Sign-In logic will go here
+        googleSignIn()
+            .then((result) => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Google Sign-In Successful!',
+                    text: `Welcome ${result.user.displayName}!`,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                router.push('/');
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Google Sign-In Failed',
+                    text: error.message,
+                });
+            });
     };
 
     return (
@@ -22,13 +68,13 @@ const LoginPage = () => {
                         <label className="label">
                             <span className="label-text font-semibold">Email Address</span>
                         </label>
-                        <input type="email" placeholder="Enter your email" className="input input-bordered w-full" required />
+                        <input type="email" name="email" placeholder="Enter your email" className="input input-bordered w-full" required />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text font-semibold">Password</span>
                         </label>
-                        <input type="password" placeholder="Enter your password" className="input input-bordered w-full" required />
+                        <input type="password" name="password" placeholder="Enter your password" className="input input-bordered w-full" required />
                     </div>
                     <div className="form-control mt-4">
                         <button type="submit" className="btn btn-primary text-white w-full">Login</button>
