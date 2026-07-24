@@ -1,2 +1,57 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+/* Custom Theme Variables for StudyNook */
+@plugin "daisyui/theme" {
+  name: "studynookTheme";
+  default: true;
+  --color-primary: #D51C39;          /* Crimson Red */
+  --color-primary-content: #ffffff;
+  --color-secondary: #FF6060;        /* Peach / Coral */
+  --color-secondary-content: #ffffff;
+  --color-accent: #FEEC41;           /* Summer Gold */
+  --color-accent-content: #1A000A;
+  --color-neutral: #3B0018;          /* Dark Maroon */
+  --color-neutral-content: #ffffff;
+  --color-base-100: #1A000A;         /* Rich Dark Main Background */
+  --color-base-200: #2B0013;         /* Dark Card Background */
+  --color-base-300: rgba(255, 96, 96, 0.25); /* Soft Glowing Border */
+  --color-base-content: #FFE1E5;     /* Soft Light Text */
+}
+
+/* Force dark background on body */
+html, body {
+  background-color: #1A000A !important;
+  color: #FFE1E5 !important;
+}
+
+/* Global Card & Input Border Softening */
+.card, .border, table, .input {
+  border-color: rgba(255, 96, 96, 0.2) !important;
+}
+
+/* Interactive Card Hover Highlight */
+.card:hover {
+  border-color: rgba(254, 236, 65, 0.5) !important;
+  transition: all 0.3s ease;
+}
+
+/* Overrides for hardcoded light classes */
+.bg-white, 
+.bg-slate-50, 
+.bg-gray-50, 
+.bg-gray-100 {
+  background-color: #2B0013 !important;
+  color: #FFE1E5 !important;
+}
+
+.text-gray-900, 
+.text-gray-800, 
+.text-slate-900 {
+  color: #FFE1E5 !important;
+}
+
+.text-gray-600, 
+.text-gray-500 {
+  color: #FFB3C1 !important;
+}
